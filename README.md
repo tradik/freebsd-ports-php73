@@ -31,7 +31,7 @@ cat /usr/local/poudriere/ports/default/MOVED.old | grep -v php73 >/usr/local/pou
 
 ----
 
-##How this repository was created:
+## How this repository was created:
 
 ### 1. Get last php73 working repo snapshot:
 `mkdir php73-lastcommit
