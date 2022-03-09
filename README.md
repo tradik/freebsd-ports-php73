@@ -8,25 +8,26 @@ It is risky to have a software that is no longer supported on a servers. Please 
    ```
    pkg install poudriere-devel -y
    ```
-2. Make sure you have options set up in /usr/local/etc/poudriere.d/options for php73 packages, manual step here - you can check example at `options` folder.
+2. Create a new jail for php73 packages
    ```
-   ls -l /usr/local/etc/poudriere.d/options | grep php73
+   /usr/local/bin/poudriere jail -c 130amd64-php73
    ```
 3. Create a new repository in poudriere
    ```
    poudriere ports -c -p php73 -U git@github.com:tradik/freebsd-ports-php73.git -m git+ssh -v
    ```
-4. Update all ports trees
+4. Make sure you have options set up in /usr/local/etc/poudriere.d/options for php73 packages, manual step here - you can check example at `options` folder. You can copy this folder.
+   ```
+   ls -l /usr/local/etc/poudriere.d/options | grep php73
+   cp -R /usr/local/poudriere/ports/php73/options /usr/local/etc/poudriere.d/130amd64-php73-options
+   ```
+5. Copy `130amd64-php73-make.conf` with default php73 setting in it
+   ```
+   cp /usr/local/poudriere/ports/php73/130amd64-php73-make.conf /usr/local/poudriere.d/
+   ```
+6. Update all ports trees
    ```
    /usr/local/bin/poudriere ports -u
-   ```
-5. Create a new jail for php73 packages
-   ```
-   /usr/local/bin/poudriere jail -c 130amd64-php73
-   ```
-6. Copy make.conf with default php73 setting
-   ```
-   cp 130amd64-php73-make.conf /usr/local/poudriere.d/
    ```
 7. Remove 'php73' MOVED references (tmp) from main REPO ( temporally for a build only )
    ```
@@ -57,16 +58,16 @@ It is risky to have a software that is no longer supported on a servers. Please 
    mkdir php73
    git init
    ```
-   a. Copy all php73 ports from the above repository to the new one and push.
+   - Copy all php73 ports from the above repository to the new one and push.
       ```
       cat /builders/build-packages.list | grep php73 > packages-php73
       cat  packages-php73 | xargs cp php73-lastcommit/ports/{} php73/
       ```
-   b. Copy Mk php.mk definitions
+   - Copy Mk php.mk definitions
       ```
       cp  php73-lastcommit/ports/Mk/Uses/php.mk .
       ```
-   c. Commit changes
+   - Commit changes
       ```
       git add *
       git commit -m 'freebsd-ports-unsupported-php73'
